@@ -1,5 +1,6 @@
 package net.milan.jade;
 
+import net.milan.jade.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -16,10 +17,11 @@ public class Window {
     private long glfwWindow; // The memory address of the GLFW window
 
     // For test
-    private float r, g, b, a;
-    private boolean fadeToBlack = false;
+    public float r, g, b, a;
 
     private static Window window = null;
+
+    private static Scene currentScene;
 
     private Window(){
         this.width = 1920;
@@ -37,6 +39,22 @@ public class Window {
             window = new Window();
         }
         return new Window();
+    }
+
+    public static void changeScene(int newScene){
+        switch (newScene){
+            case 0:
+                currentScene = new LevelEditorScene();
+                // currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                // currentScene.init();
+                break;
+            default:
+                assert false: "Unknown scene " + newScene;
+                break;
+        }
     }
 
     public void run(){
@@ -96,9 +114,15 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
+        Window.changeScene(0);
+
     }
 
     public void loop(){
+        float beginTime = Time.getTime();
+        float endTime;
+        float dt = -1.0f;
+
         while (!glfwWindowShouldClose(glfwWindow)){
             // Poll events
             glfwPollEvents();
@@ -106,17 +130,15 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if (fadeToBlack){
-                r = Math.max(r - 0.1f, 0);
-                g = Math.max(g - 0.1f, 0);
-                b = Math.max(b - 0.1f, 0);
-            }
-
-            if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
-                fadeToBlack = true;
+            if (dt >= 0){
+                currentScene.update(dt);
             }
 
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }
