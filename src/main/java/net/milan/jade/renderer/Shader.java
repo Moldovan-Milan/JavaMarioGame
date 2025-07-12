@@ -1,6 +1,10 @@
 package net.milan.jade.renderer;
 
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
+
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -114,5 +118,12 @@ public class Shader {
     public void detach(){
         // Detach shader program
         glUseProgram(0);
+    }
+
+    public void uploadMat4f (String variableName, Matrix4f value){
+        int varLocation = glGetUniformLocation(shaderProgramID, variableName);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
+        value.get(matBuffer);
+        glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 }

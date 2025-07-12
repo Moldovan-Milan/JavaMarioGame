@@ -2,6 +2,7 @@ package net.milan.jade;
 
 
 import net.milan.jade.renderer.Shader;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -15,10 +16,10 @@ public class LevelEditorScene extends Scene{
 
     private final float[] vertexArray = {
             // Positions         // Colors
-             0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f, // Bottom Right 0
-            -0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f, // Top Left     1
-             0.5f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f, // Top Right    2
-            -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f  // Bottom Left  3
+             100.5f, 0.5f,   0.0f,   1.0f, 0.0f, 0.0f, 1.0f, // Bottom Right 0
+             0.5f,   100.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f, // Top Left     1
+             100.5f, 100.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f, // Top Right    2
+             0.5f,   0.5f,   0.0f,   1.0f, 1.0f, 0.0f, 1.0f  // Bottom Left  3
     };
 
     // Clock wise order
@@ -37,6 +38,7 @@ public class LevelEditorScene extends Scene{
 
     @Override
     public void init() {
+        this.camera = new Camera(new Vector2f());
 
         // Compile the shaders
         defaultShader.compile();
@@ -78,8 +80,15 @@ public class LevelEditorScene extends Scene{
 
     @Override
     public void update(float dt) {
+        camera.position.x -= dt * 50.f;
+
         // Bind shader program
         defaultShader.use();
+
+        // Upload the view and projection matrices to the shader
+        defaultShader.uploadMat4f("uPojectionMatrix", camera.getProjectionMatrix());
+        defaultShader.uploadMat4f("uViewMatrix", camera.getViewMatrix());
+
         // Bind the VAO that we are using
         glBindVertexArray(vaoId);
 
