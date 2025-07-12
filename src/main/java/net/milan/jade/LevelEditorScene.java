@@ -2,6 +2,7 @@ package net.milan.jade;
 
 
 import net.milan.jade.renderer.Shader;
+import net.milan.jade.util.Time;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
@@ -86,8 +87,9 @@ public class LevelEditorScene extends Scene{
         defaultShader.use();
 
         // Upload the view and projection matrices to the shader
-        defaultShader.uploadMat4f("uPojectionMatrix", camera.getProjectionMatrix());
+        defaultShader.uploadMat4f("uProjectionMatrix", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uViewMatrix", camera.getViewMatrix());
+        defaultShader.uploadFloat("uTime", Time.getTime());
 
         // Bind the VAO that we are using
         glBindVertexArray(vaoId);
