@@ -1,6 +1,8 @@
 package net.milan.jade;
 
 
+import net.milan.jade.components.FontRenderer;
+import net.milan.jade.components.SpriteRenderer;
 import net.milan.jade.renderer.Shader;
 import net.milan.jade.renderer.Texture;
 import net.milan.jade.util.Time;
@@ -32,6 +34,7 @@ public class LevelEditorScene extends Scene{
 
     private final Shader defaultShader;
     private final Texture testTexture;
+    private GameObject testObject;
 
 
     public LevelEditorScene(){
@@ -43,6 +46,12 @@ public class LevelEditorScene extends Scene{
 
     @Override
     public void init() {
+        this.testObject = new GameObject("test object");
+        this.testObject.addComponent(new SpriteRenderer());
+        this.testObject.addComponent(new FontRenderer());
+        this.addGameObjectToScene(this.testObject);
+
+
         this.camera = new Camera(new Vector2f());
 
         // Compile the shaders
@@ -123,5 +132,9 @@ public class LevelEditorScene extends Scene{
         glBindVertexArray(0);
         defaultShader.detach();
         testTexture.unbind();
+
+        for (GameObject gameObject : this.gameObjects) {
+            gameObject.update(dt);
+        }
     }
 }
