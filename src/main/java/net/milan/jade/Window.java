@@ -38,7 +38,7 @@ public class Window {
         if (window == null){
             window = new Window();
         }
-        return new Window();
+        return window;
     }
 
     public static void changeScene(int newScene){
