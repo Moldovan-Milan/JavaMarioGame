@@ -2,6 +2,7 @@ package net.milan.jade.renderer;
 
 import net.milan.jade.Window;
 import net.milan.jade.components.SpriteRenderer;
+import net.milan.jade.util.AssetPool;
 import org.joml.Vector4f;
 
 import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
@@ -36,8 +37,7 @@ public class RenderBatch {
 
     public RenderBatch(int maxBatchSize) {
         this.maxBatchSize = maxBatchSize;
-        shader = new Shader("assets/shaders/default.glsl");
-        shader.compile();
+        shader = AssetPool.getShader("assets/shaders/default.glsl");
         this.sprites = new SpriteRenderer[maxBatchSize];
         vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
 
